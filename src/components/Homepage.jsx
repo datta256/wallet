@@ -1,0 +1,99 @@
+import React, { useState } from "react";
+import { useWeb3Modal } from '@web3modal/wagmi/react'
+import { useAccount } from 'wagmi'
+import Send from './Send.jsx'
+import Assets from './Assets.jsx'
+import QRCode from './QRCode.jsx'
+import UniswapFrame from './Swap.jsx'
+
+// Simple open-source fox SVG (not official MetaMask logo)
+const FoxSVG = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="24,4 44,14 38,40 24,32 10,40 4,14" fill="#E2761B" />
+    <polygon points="24,32 38,40 34,28" fill="#D7C1B3" />
+    <polygon points="24,32 10,40 14,28" fill="#D7C1B3" />
+    <polygon points="24,4 24,18 44,14" fill="#E4761B" />
+    <polygon points="24,4 24,18 4,14" fill="#E4761B" />
+    <polygon points="24,18 34,28 38,40 24,32" fill="#F6851B" />
+    <polygon points="24,18 14,28 10,40 24,32" fill="#F6851B" />
+    <polygon points="24,18 34,28 24,24 14,28" fill="#C0AD9E" />
+    <polygon points="24,24 34,28 24,32 14,28" fill="#161616" />
+  </svg>
+);
+
+const tabs = [
+  { name: "Assets", icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+    ) },
+  { name: "Send", icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+    ) },
+  { name: "Swap", icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 7V4a1 1 0 011-1h3" /><path d="M20 17v3a1 1 0 01-1 1h-3" /><path d="M4 17l4-4-4-4" /><path d="M20 7l-4 4 4 4" /></svg>
+    ) },
+  { name: "QR", icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2" stroke="currentColor" strokeWidth="2" /><rect x="14" y="3" width="7" height="7" rx="2" stroke="currentColor" strokeWidth="2" /><rect x="14" y="14" width="7" height="7" rx="2" stroke="currentColor" strokeWidth="2" /><path d="M7 17v.01M7 14v.01M10 17v.01M17 10v.01M17 7v.01M20 10v.01" stroke="currentColor" strokeWidth="2" /></svg>
+    ) },
+];
+
+export default function Homepage() {
+  const [activeTab, setActiveTab] = useState("Assets");
+  const { open } = useWeb3Modal();
+  const { address, isConnected } = useAccount();
+
+  // Shorten address for display
+  const shortAddress = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "";
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-between bg-gradient-to-br from-orange-50 via-white to-blue-100 relative overflow-x-hidden">
+      {/* Decorative background SVG */}
+      <svg className="absolute -top-20 -left-20 opacity-20 z-0" width="400" height="400" viewBox="0 0 400 400" fill="none">
+        <circle cx="200" cy="200" r="200" fill="#E2761B" />
+      </svg>
+      <svg className="absolute -bottom-32 -right-32 opacity-10 z-0" width="400" height="400" viewBox="0 0 400 400" fill="none">
+        <circle cx="200" cy="200" r="200" fill="#1B263B" />
+      </svg>
+
+      {/* Wallet Card */}
+      <div className="relative z-10 w-full max-w-sm mt-12 mb-4 p-6 bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl flex flex-col items-center border border-orange-100">
+        <div className="w-16 h-16 flex items-center justify-center mb-2 rounded-full shadow-lg bg-gradient-to-br from-orange-400 to-yellow-300 border-4 border-white">
+          <FoxSVG />
+        </div>
+        {isConnected ? (
+          <div className="mt-3 px-5 py-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-xl font-bold shadow text-center">
+            {shortAddress}
+          </div>
+        ) : (
+          <button
+            className="mt-3 px-5 py-2 bg-gradient-to-r from-orange-500 to-yellow-400 text-white rounded-xl font-bold shadow hover:from-orange-600 hover:to-yellow-500 transition"
+            onClick={open}
+          >
+            Connect Wallet
+          </button>
+        )}
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 w-full max-w-sm flex flex-col items-center justify-center relative z-10">
+        {activeTab === "Assets" && <Assets />}
+        {activeTab === "Send" && <Send />}
+        {activeTab === "Swap" && <UniswapFrame />}
+        {activeTab === "QR" && <QRCode />}
+      </div>
+
+      {/* Tab Navigation */}
+      <div className="w-full max-w-sm fixed bottom-0 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md rounded-t-2xl shadow-lg flex justify-around py-3 border-t border-orange-100 z-20">
+        {tabs.map((tab) => (
+          <button
+            key={tab.name}
+            className={`flex flex-col items-center flex-1 py-1 transition font-semibold ${activeTab === tab.name ? "text-orange-600" : "text-gray-400 hover:text-orange-400"}`}
+            onClick={() => setActiveTab(tab.name)}
+          >
+            <span>{tab.icon}</span>
+            <span className="text-xs mt-1">{tab.name}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+} 
