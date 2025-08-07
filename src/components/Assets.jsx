@@ -19,9 +19,9 @@ const Assets = () => {
 
   const chains = [
     { id: "all", name: "All", icon: "🌐", color: "from-gray-500 to-gray-600" },
-    { id: "ethereum", name: "Ethereum", icon: "🔷", color: "from-blue-500 to-purple-600" },
-    { id: "polygon", name: "Polygon", icon: "💜", color: "from-purple-500 to-pink-600" },
-    { id: "bsc", name: "BSC", icon: "💛", color: "from-yellow-500 to-orange-600" },
+    { id: "ethereum", name: "Ethereum", icon: "🔷", color: "from-blue-600 to-blue-400" },
+    { id: "polygon", name: "Polygon", icon: "💜", color: "from-blue-400 to-blue-300" },
+    { id: "bsc", name: "BSC", icon: "💛", color: "from-blue-300 to-blue-200" },
   ];
 
   if (!isConnected) {
@@ -43,7 +43,7 @@ const Assets = () => {
       <div className="w-full max-w-sm mx-auto p-4 space-y-6">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-1">Assets</h2>
-          <div className="bg-gradient-to-r from-orange-500 to-yellow-400 rounded-xl p-4 text-white">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-400 rounded-xl p-4 text-white">
             <div className="animate-pulse">
               <div className="h-4 bg-white/20 rounded mb-2"></div>
               <div className="h-8 bg-white/20 rounded mb-2"></div>
@@ -80,17 +80,17 @@ const Assets = () => {
       <div className="w-full max-w-sm mx-auto p-4 space-y-6">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-1">Assets</h2>
-          <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-xl p-4">
-            <div className="text-red-600 mb-2">
+          <div className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-xl p-4">
+            <div className="text-blue-600 mb-2">
               <svg className="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <p className="text-red-700 dark:text-red-300 font-medium">Failed to load portfolio data</p>
-            <p className="text-red-600 dark:text-red-400 text-sm mt-1">{error}</p>
+            <p className="text-blue-700 dark:text-blue-300 font-medium">Failed to load portfolio data</p>
+            <p className="text-blue-600 dark:text-blue-400 text-sm mt-1">{error}</p>
             <button
               onClick={refetch}
-              className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+              className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
             >
               Try Again
             </button>
@@ -105,7 +105,7 @@ const Assets = () => {
       {/* Header */}
       <div className="text-center">
         <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-1">Assets</h2>
-        <div className="bg-gradient-to-r from-orange-500 to-yellow-400 rounded-xl p-4 text-white">
+        <div className="bg-gradient-to-r from-blue-600 to-blue-400 rounded-xl p-4 text-white">
           <p className="text-sm opacity-90">Total Portfolio Value</p>
           <p className="text-3xl font-bold">${totalValue.toFixed(2)}</p>
           <p className={`text-sm ${totalChange >= 0 ? 'text-green-200' : 'text-red-200'}`}>
@@ -129,8 +129,8 @@ const Assets = () => {
               onClick={() => setSelectedChain(chain.id)}
               className={`p-3 rounded-xl border-2 transition-all ${
                 selectedChain === chain.id 
-                  ? "border-orange-500 bg-orange-50 dark:bg-orange-900"
-                  : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500"
+                  ? "border-blue-600 bg-blue-50 dark:bg-blue-900"
+                  : "border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500"
               }`}
             >
               <div className="text-center">
@@ -163,7 +163,7 @@ const Assets = () => {
               <div key={`${token.symbol}-${token.chain}`} className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500 transition-all">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-700 dark:to-blue-600 rounded-full flex items-center justify-center">
                       <span className="text-lg">{token.icon}</span>
                     </div>
                     <div>
@@ -205,11 +205,11 @@ const Assets = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      tx.type === 'send' ? 'bg-red-100 dark:bg-red-900' : 
+                      tx.type === 'send' ? 'bg-blue-100 dark:bg-blue-900' : 
                       tx.type === 'receive' ? 'bg-green-100 dark:bg-green-900' : 'bg-blue-100 dark:bg-blue-900'
                     }`}>
                       <svg className={`w-4 h-4 ${
-                        tx.type === 'send' ? 'text-red-600' : 
+                        tx.type === 'send' ? 'text-blue-600' : 
                         tx.type === 'receive' ? 'text-green-600' : 'text-blue-600'
                       }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         {tx.type === 'send' && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />}
@@ -235,10 +235,10 @@ const Assets = () => {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-2 gap-3">
-        <button className="p-3 bg-gradient-to-r from-orange-500 to-yellow-400 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-yellow-500 transition-all">
+        <button className="p-3 bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-500 transition-all">
           Send
         </button>
-        <button className="p-3 bg-gradient-to-r from-purple-500 to-pink-400 text-white rounded-xl font-semibold hover:from-purple-600 hover:to-pink-500 transition-all">
+        <button className="p-3 bg-gradient-to-r from-blue-400 to-blue-300 text-white rounded-xl font-semibold hover:from-blue-500 hover:to-blue-400 transition-all">
           Swap
         </button>
       </div>

@@ -127,17 +127,41 @@ export const usePortfolioData = () => {
     return txArray.slice(0, 10).map(tx => {
       const isReceive = tx.to?.toLowerCase() === address?.toLowerCase();
       const isSend = tx.from?.toLowerCase() === address?.toLowerCase();
-      
+      // Try to determine token symbol and price
+      let tokenSymbol = 'ETH';
+      let decimals = 18;
+      let price = 0;
+      if (chainId === 'polygon') {
+        tokenSymbol = 'MATIC';
+        decimals = 18;
+      } else if (chainId === 'bsc') {
+        tokenSymbol = 'BNB';
+        decimals = 18;
+      }
+      // If ERC-20, try to get symbol/decimals from tx (if available)
+      if (tx.tokenSymbol) {
+        tokenSymbol = tx.tokenSymbol;
+      }
+      if (tx.tokenDecimal) {
+        decimals = parseInt(tx.tokenDecimal);
+      }
+      // Use price from prices object if available
+      // fallback to 0 if not found
+      // prices is not in scope here, so pass as argument later
+      // For now, leave as 0, will fix in fetchPortfolioData
       return {
         type: isReceive ? 'receive' : isSend ? 'send' : 'swap',
-        token: 'ETH', // This would be determined from the transaction
-        amount: formatBalance(tx.value || '0'),
-        value: formatUSD(parseFloat(formatBalance(tx.value || '0')) * 2000), // Approximate ETH price
+        token: tokenSymbol,
+        amount: formatBalance(tx.value || '0', decimals),
+        // value will be set in fetchPortfolioData
+        value: tx.value || '0',
         to: isReceive ? tx.from : tx.to,
         from: isReceive ? tx.from : tx.to,
         time: new Date(parseInt(tx.timeStamp) * 1000).toLocaleDateString(),
         status: tx.isError === '0' ? 'confirmed' : 'failed',
         hash: tx.hash,
+        chain: chainId,
+        decimals,
       };
     });
   }, [address]);
@@ -153,35 +177,66 @@ export const usePortfolioData = () => {
       const tokenIds = ['ethereum', 'matic-network', 'binancecoin', 'usd-coin', 'tether'];
       const prices = await fetchTokenPrices(tokenIds);
 
-      // Fetch data for all chains
+      // Fetch data for all chains in parallel
       const chains = ['ethereum', 'polygon', 'bsc'];
-      const allTokens = [];
-      const allTransactions = [];
+      const chainDataArr = await Promise.all(
+        chains.map(chain => fetchChainData(chain, address))
+      );
 
-      for (const chain of chains) {
-        const chainData = await fetchChainData(chain, address);
-        const processedTokens = processTokenData(chainData.tokens, chain, prices, chainData.nativeBalance);
+      const allTokens = [];
+      let allTransactions = [];
+
+      chainDataArr.forEach((chainData, idx) => {
+        const chain = chains[idx];
+        // Normalize tokens array for all chains
+        let tokensArr = [];
+        if (chain === 'ethereum') {
+          tokensArr = chainData.tokens || [];
+        } else {
+          tokensArr = chainData.tokens || [];
+        }
+        const processedTokens = processTokenData(tokensArr, chain, prices, chainData.nativeBalance);
         const processedTransactions = processTransactionData(chainData.transactions, chain);
-        
         allTokens.push(...processedTokens);
         allTransactions.push(...processedTransactions);
-      }
+      });
+
+      // Now, update transaction value to use correct price and formatted USD
+      allTransactions = allTransactions.map(tx => {
+        let price = 0;
+        const symbol = tx.token?.toLowerCase();
+        if (symbol === 'eth') price = prices['ethereum']?.usd || 0;
+        else if (symbol === 'matic') price = prices['matic-network']?.usd || 0;
+        else if (symbol === 'bnb') price = prices['binancecoin']?.usd || 0;
+        else if (prices[symbol]) price = prices[symbol]?.usd || 0;
+        const value = parseFloat(tx.amount) * price;
+        return {
+          ...tx,
+          value: formatUSD(value),
+        };
+      });
 
       // Calculate totals
       const totalValue = allTokens.reduce((sum, token) => {
         return sum + parseFloat(token.value.replace('$', '').replace(',', ''));
       }, 0);
 
-      const totalChange = allTokens.reduce((sum, token) => {
+      // Weighted average for totalChange
+      const totalChange = allTokens.reduce((acc, token) => {
         const change = parseFloat(token.change.replace('%', '').replace('+', '').replace('-', ''));
-        return sum + change;
-      }, 0);
+        const value = parseFloat(token.value.replace('$', '').replace(',', ''));
+        return {
+          sum: acc.sum + (change * value),
+          total: acc.total + value,
+        };
+      }, { sum: 0, total: 0 });
+      const weightedChange = totalChange.total > 0 ? totalChange.sum / totalChange.total : 0;
 
       setPortfolioData({
         tokens: allTokens,
         transactions: allTransactions,
         totalValue,
-        totalChange,
+        totalChange: weightedChange,
         loading: false,
         error: null,
       });

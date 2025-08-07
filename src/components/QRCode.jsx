@@ -64,7 +64,7 @@ const QRCode = () => {
       <div className="space-y-3">
         <button 
           onClick={handleCopyAddress}
-          className="w-full py-3 bg-gradient-to-r from-orange-500 to-yellow-400 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-yellow-500 transition-all duration-200 shadow-lg"
+          className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-400 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-500 transition-all duration-200 shadow-lg"
         >
           Copy Address
         </button>
