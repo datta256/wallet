@@ -5,6 +5,7 @@ import Send from "./Send.jsx";
 import Assets from "./Assets.jsx";
 import QRCode from "./QRCode.jsx";
 import UniswapFrame from "./Swap.jsx";
+import logo from "../assets/logo.svg"; // Adjust the path if needed
 
 // Simple open-source fox SVG
 const FoxSVG = () => (
@@ -95,40 +96,33 @@ export default function Homepage() {
           <circle cx="200" cy="200" r="200" fill="#1e3a8a" />
         </svg>
 
-        {/* Toggle Button */}
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className="absolute top-4 right-4 z-30 text-sm px-3 py-1 bg-blue-100 dark:bg-blue-900 rounded-full text-blue-800 dark:text-white shadow"
-        >
-          {darkMode ? "☀️ Light" : "🌙 Dark"}
-        </button>
 
         {/* Wallet Card */}
-        <div className="relative z-10 w-full max-w-sm mt-12 mb-4 p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl shadow-2xl flex flex-col items-center border border-blue-100 dark:border-gray-700">
-          <div className="w-16 h-16 flex items-center justify-center mb-2 rounded-full shadow-lg bg-gradient-to-br from-blue-500 to-blue-300 border-4 border-white">
-            <FoxSVG />
-          </div>
-          {isConnected ? (
-            <div className="mt-3 px-5 py-2 bg-gradient-to-r from-blue-700 to-blue-400 text-white rounded-xl font-bold shadow text-center">
-              {shortAddress}
+          <div className="relative z-10 w-full max-w-sm mt-12 mb-4 p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl shadow-2xl flex flex-col items-center border border-blue-100 dark:border-gray-700">
+            <div className="mb-2 flex items-center justify-center" style={{ height: "100px" }}>
+              <img src={logo} alt="Logo" className="w-[520px] h-16" />
             </div>
-          ) : (
-            <button
-              className="mt-3 px-5 py-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-xl font-bold shadow hover:from-blue-700 hover:to-blue-500 dark:from-blue-700 dark:to-blue-500 transition"
-              onClick={open}
-            >
-              Connect Wallet
-            </button>
-          )}
-        </div>
+            {isConnected ? (
+              <div className="mt-3 px-5 py-2 bg-gradient-to-r from-blue-700 to-blue-400 text-white rounded-xl font-bold shadow text-center">
+                {shortAddress}
+              </div>
+            ) : (
+              <button
+                className="mt-3 px-5 py-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-xl font-bold shadow hover:from-blue-700 hover:to-blue-500 dark:from-blue-700 dark:to-blue-500 transition"
+                onClick={open}
+              >
+                Connect Wallet
+              </button>
+            )}
+          </div>
 
-        {/* Main Panel */}
-        <div className="flex-1 w-full max-w-sm flex flex-col items-center justify-center relative z-10">
-          {activeTab === "Assets" && <Assets />}
-          {activeTab === "Send" && <Send />}
-          {activeTab === "Swap" && <UniswapFrame />}
-          {activeTab === "QR" && <QRCode />}
-        </div>
+          {/* Main Panel */}
+          <div className="flex-1 w-full max-w-sm flex flex-col items-center justify-center relative z-10">
+            {activeTab === "Assets" && <Assets />}
+            {activeTab === "Send" && <Send />}
+            {activeTab === "Swap" && <UniswapFrame />}
+            {activeTab === "QR" && <QRCode />}
+          </div>
 
         {/* Bottom Nav */}
         <div className="w-full max-w-sm fixed bottom-0 left-1/2 -translate-x-1/2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-t-2xl shadow-lg flex justify-around py-3 border-t border-blue-100 dark:border-gray-700 z-20">
