@@ -100,7 +100,7 @@ export default function Homepage() {
         {/* Wallet Card */}
           <div className="relative z-10 w-full max-w-sm mt-12 mb-4 p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl shadow-2xl flex flex-col items-center border border-blue-100 dark:border-gray-700">
             <div className="mb-2 flex items-center justify-center" style={{ height: "100px" }}>
-              <img src={logo} alt="Logo" className="w-[520px] h-16" />
+              <img src={logo} alt="Logo" className="w-[600px] h-16" />
             </div>
             {isConnected ? (
               <div className="mt-3 px-5 py-2 bg-gradient-to-r from-blue-700 to-blue-400 text-white rounded-xl font-bold shadow text-center">
