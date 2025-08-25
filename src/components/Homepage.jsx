@@ -5,7 +5,7 @@ import Send from "./Send.jsx";
 import Assets from "./Assets.jsx";
 import QRCode from "./QRCode.jsx";
 import UniswapFrame from "./Swap.jsx";
-import CreateWallet from "./createwallet.jsx";
+import CreateWallet from "./CreateWallet.jsx";
 import logo from "../assets/logo.svg";
 
 const tabs = [
