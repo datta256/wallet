@@ -492,7 +492,7 @@ export default function CreateWallet() {
             <div className="text-center">
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Address</p>
               <div className="px-4 py-2 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 font-mono text-sm">
-                {address}
+                {address.slice(0, 6)}…${address.slice(-4)}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
